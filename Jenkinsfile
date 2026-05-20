@@ -32,7 +32,7 @@ pipeline {
                     -Dsonar.projectKey=nodeapp \
                     -Dsonar.sources=. \
                     -Dsonar.host.url=http://44.192.132.251:9000 \
-                    -Dsonar.login=$SONAR_AUTH_TOKEN
+                    -Dsonar.token=$SONAR_AUTH_TOKEN
                     '''
                 }
             }
