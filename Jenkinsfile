@@ -7,6 +7,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = "nodeapp"
+        DOCKERHUB_USER = "kartikin"
     }
 
     stages {
@@ -50,16 +51,37 @@ pipeline {
             }
         }
 
+        stage('Push To DockerHub') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+
+                    sh '''
+                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+
+                    docker tag $IMAGE_NAME $DOCKERHUB_USER/$IMAGE_NAME:latest
+
+                    docker push $DOCKERHUB_USER/$IMAGE_NAME:latest
+                    '''
+                }
+            }
+        }
+
         stage('Deploy Container') {
             steps {
                 sh '''
                 docker stop nodeapp-container || true
                 docker rm nodeapp-container || true
 
+                docker pull $DOCKERHUB_USER/$IMAGE_NAME:latest
+
                 docker run -d \
                 --name nodeapp-container \
                 -p 3000:3000 \
-                $IMAGE_NAME
+                $DOCKERHUB_USER/$IMAGE_NAME:latest
                 '''
             }
         }
