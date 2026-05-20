@@ -31,7 +31,7 @@ pipeline {
                     npx sonarqube-scanner \
                     -Dsonar.projectKey=nodeapp \
                     -Dsonar.sources=. \
-                    -Dsonar.host.url=http://http://44.192.132.251:9000 \
+                    -Dsonar.host.url=http://44.192.132.251:9000 \
                     -Dsonar.login=$SONAR_AUTH_TOKEN
                     '''
                 }
